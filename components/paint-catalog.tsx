@@ -1,6 +1,7 @@
 "use client"
 
-import { type Paint, type Formulation, scaleFormulation } from "@/lib/db"
+import { scaleFormulation } from "@/lib/utils"
+import type { PaintWithFormulation } from "@/lib/db"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -11,10 +12,6 @@ import { useRouter } from "next/navigation"
 import { useState } from "react"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-
-interface PaintWithFormulation extends Paint {
-  formulations: Formulation[]
-}
 
 interface PaintCatalogProps {
   paints: PaintWithFormulation[]
@@ -64,8 +61,12 @@ export function PaintCatalog({ paints }: PaintCatalogProps) {
 function PaintCard({ paint, onDelete }: { paint: PaintWithFormulation; onDelete: (id: number, name: string) => void }) {
   const [expanded, setExpanded] = useState(false)
   const [customSize, setCustomSize] = useState(paint.base_size.toString())
-  const [scaledFormulations, setScaledFormulations] = useState(paint.formulations)
-
+  const [scaledFormulations, setScaledFormulations] = useState(() =>
+    paint.formulations.map((f) => ({
+      ...f,
+      quantity: typeof f.quantity === "string" ? Number.parseFloat(f.quantity) : f.quantity,
+    })),
+  )
   const handleSizeChange = (newSize: string) => {
     setCustomSize(newSize)
     const size = Number.parseFloat(newSize) || paint.base_size

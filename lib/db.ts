@@ -1,4 +1,5 @@
 import { neon } from "@neondatabase/serverless"
+import { type Formulation } from "./utils"
 
 // Initialize the Neon client
 // When you connect Neon, this will use the DATABASE_URL environment variable
@@ -27,15 +28,6 @@ export interface Paint {
   updated_at: string
 }
 
-export interface Formulation {
-  id: number
-  paint_id: number
-  component_name: string
-  quantity: number
-  unit: string
-  sort_order: number
-  created_at: string
-}
 
 export interface Purchase {
   id: number
@@ -58,12 +50,4 @@ export interface PurchaseWithDetails extends Purchase {
 export interface PaintWithFormulation extends Paint {
   formulations: Formulation[]
 }
-
-// Helper function to scale formulation quantities
-export function scaleFormulation(formulation: Formulation, targetSize: number, baseSize = 1): Formulation {
-  const scaleFactor = targetSize / baseSize
-  return {
-    ...formulation,
-    quantity: Number((formulation.quantity * scaleFactor).toFixed(3)),
-  }
-}
+export { scaleFormulation } from "./utils"
