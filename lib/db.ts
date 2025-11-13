@@ -50,4 +50,4 @@ export interface PurchaseWithDetails extends Purchase {
 export interface PaintWithFormulation extends Paint {
   formulations: Formulation[]
 }
-export { scaleFormulation } from "./utils"
+export { scaleFormulation, Formulation } from "./utils"
