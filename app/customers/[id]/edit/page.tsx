@@ -1,25 +1,12 @@
-import { sql } from "@/lib/db"
-import type { Customer } from "@/lib/db"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { CustomerForm } from "@/components/customer-form"
 import { notFound } from "next/navigation"
+import { getCustomer } from "@/lib/queries"
 
-async function getCustomer(id: string): Promise<Customer | null> {
-  try {
-    const result = await sql`
-      SELECT * FROM customers WHERE id = ${id}
-    `
-    return (result[0] as Customer) || null
-  } catch (error) {
-    console.error("[v0] Error fetching customer:", error)
-    return null
-  }
-}
-
-export default async function EditCustomerPage({ params }: { params: { id: string } }) {
+export default async function EditCustomerPage({ params }: Readonly<{ params: { id: string } }>) {
   const customer = await getCustomer(params.id)
 
   if (!customer) {

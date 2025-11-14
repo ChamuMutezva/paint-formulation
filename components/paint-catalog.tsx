@@ -17,7 +17,7 @@ interface PaintCatalogProps {
   paints: PaintWithFormulation[]
 }
 
-export function PaintCatalog({ paints }: PaintCatalogProps) {
+export function PaintCatalog({ paints }: Readonly<PaintCatalogProps>) {
   const router = useRouter()
 
   const handleDelete = async (id: number, colorName: string) => {
@@ -30,7 +30,7 @@ export function PaintCatalog({ paints }: PaintCatalogProps) {
         await deletePaint(id)
         router.refresh()
       } catch (error) {
-        console.error("[v0] Error deleting paint:", error)
+        console.error("Error deleting paint:", error)
         alert("Failed to delete paint")
       }
     }
@@ -58,7 +58,7 @@ export function PaintCatalog({ paints }: PaintCatalogProps) {
   )
 }
 
-function PaintCard({ paint, onDelete }: { paint: PaintWithFormulation; onDelete: (id: number, name: string) => void }) {
+function PaintCard({ paint, onDelete }: Readonly<{ paint: PaintWithFormulation; onDelete: (id: number, name: string) => void }>) {
   const [expanded, setExpanded] = useState(false)
   const [customSize, setCustomSize] = useState(paint.base_size.toString())
   const [scaledFormulations, setScaledFormulations] = useState(() =>
@@ -139,8 +139,8 @@ function PaintCard({ paint, onDelete }: { paint: PaintWithFormulation; onDelete:
             {expanded && (
               <div className="space-y-2 p-3 bg-muted rounded-lg">
                 <div className="font-medium text-sm mb-2">Components:</div>
-                {scaledFormulations.map((formulation, idx) => (
-                  <div key={idx} className="flex justify-between text-sm">
+                {scaledFormulations.map((formulation) => (
+                  <div key={formulation.id} className="flex justify-between text-sm">
                     <span className="text-muted-foreground">{formulation.component_name}</span>
                     <span className="font-medium">
                       {formulation.quantity.toFixed(3)} {formulation.unit}

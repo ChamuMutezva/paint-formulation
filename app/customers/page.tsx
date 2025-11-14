@@ -1,23 +1,9 @@
-import { sql } from "@/lib/db"
-import type { Customer } from "@/lib/db"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { CustomerTable } from "@/components/customer-table"
-
-async function getCustomers(): Promise<Customer[]> {
-  try {
-    const customers = await sql`
-      SELECT * FROM customers 
-      ORDER BY name ASC
-    `
-    return customers as Customer[]
-  } catch (error) {
-    console.error("[v0] Error fetching customers:", error)
-    return []
-  }
-}
+import { getCustomers } from "@/lib/queries"
 
 export default async function CustomersPage() {
   const customers = await getCustomers()

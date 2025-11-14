@@ -1,28 +1,9 @@
-import { sql } from "@/lib/db"
-import type { Customer, Paint } from "@/lib/db"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { PurchaseForm } from "@/components/purchase-form"
-
-async function getCustomersAndPaints() {
-  try {
-    const customers = await sql`
-      SELECT * FROM customers ORDER BY name ASC
-    `
-    const paints = await sql`
-      SELECT * FROM paints ORDER BY color_name ASC
-    `
-    return {
-      customers: customers as Customer[],
-      paints: paints as Paint[],
-    }
-  } catch (error) {
-    console.error("[v0] Error fetching data:", error)
-    return { customers: [], paints: [] }
-  }
-}
+import { getCustomersAndPaints } from "@/lib/queries"
 
 export default async function NewPurchasePage() {
   const { customers, paints } = await getCustomersAndPaints()

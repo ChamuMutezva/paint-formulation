@@ -14,7 +14,7 @@ interface CustomerSearchResultsProps {
   }
 }
 
-export function CustomerSearchResults({ results }: CustomerSearchResultsProps) {
+export function CustomerSearchResults({ results }: Readonly<CustomerSearchResultsProps>) {
   const { customer, purchases } = results
 
   if (!customer) {

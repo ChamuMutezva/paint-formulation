@@ -1,34 +1,8 @@
-import { sql } from "@/lib/db"
-import type { Paint, Formulation } from "@/lib/db"
 import { Button } from "@/components/ui/button"
 import { Plus, ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { PaintCatalog } from "@/components/paint-catalog"
-
-async function getPaintsWithFormulations() {
-  try {
-    const paints = await sql`
-      SELECT * FROM paints 
-      ORDER BY color_name ASC
-    `
-
-    const formulations = await sql`
-      SELECT * FROM formulations 
-      ORDER BY paint_id, sort_order ASC
-    `
-
-    // Group formulations by paint_id
-    const paintsWithFormulations = (paints as Paint[]).map((paint) => ({
-      ...paint,
-      formulations: (formulations as Formulation[]).filter((f) => f.paint_id === paint.id),
-    }))
-
-    return paintsWithFormulations
-  } catch (error) {
-    console.error("[v0] Error fetching paints:", error)
-    return []
-  }
-}
+import { getPaintsWithFormulations } from "@/lib/queries"
 
 export default async function PaintsPage() {
   const paints = await getPaintsWithFormulations()
