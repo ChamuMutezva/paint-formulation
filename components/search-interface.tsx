@@ -35,7 +35,7 @@ export function SearchInterface() {
         setCustomerResults(null)
       }
     } catch (error) {
-      console.error("[v0] Error searching:", error)
+      console.error("Error searching:", error)
       alert("Search failed. Please try again.")
     } finally {
       setSearching(false)

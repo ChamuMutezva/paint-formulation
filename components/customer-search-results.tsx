@@ -6,11 +6,12 @@ import { Button } from "@/components/ui/button"
 import { ChevronDown, ChevronUp, Building2, User } from "lucide-react"
 import { useState } from "react"
 import Link from "next/link"
+import { Customer, Purchase, Formulation } from "@/lib/db"
 
 interface CustomerSearchResultsProps {
   results: {
-    customer: any
-    purchases: any[]
+    customer: Customer
+    purchases: Purchase[]
   }
 }
 
@@ -26,7 +27,7 @@ export function CustomerSearchResults({ results }: Readonly<CustomerSearchResult
       </Card>
     )
   }
-
+/*
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -34,7 +35,7 @@ export function CustomerSearchResults({ results }: Readonly<CustomerSearchResult
       day: "numeric",
     })
   }
-
+*/
   return (
     <div className="space-y-4">
       <Card>
@@ -72,7 +73,7 @@ export function CustomerSearchResults({ results }: Readonly<CustomerSearchResult
           </Card>
         ) : (
           <div className="grid gap-4 md:grid-cols-2">
-            {purchases.map((purchase: any) => (
+            {purchases.map((purchase: Purchase) => (
               <PurchaseCard key={purchase.id} purchase={purchase} />
             ))}
           </div>
@@ -82,7 +83,7 @@ export function CustomerSearchResults({ results }: Readonly<CustomerSearchResult
   )
 }
 
-function PurchaseCard({ purchase }: { purchase: any }) {
+function PurchaseCard({ purchase }: Readonly<{ purchase: any }>) {
   const [expanded, setExpanded] = useState(false)
 
   const formatDate = (dateString: string) => {
@@ -127,8 +128,8 @@ function PurchaseCard({ purchase }: { purchase: any }) {
         {expanded && (
           <div className="space-y-2 p-3 bg-muted rounded-lg">
             <div className="font-medium text-sm mb-2">Components:</div>
-            {purchase.formulations.map((formulation: any, idx: number) => (
-              <div key={idx} className="flex justify-between text-sm">
+            {purchase.formulations.map((formulation: Formulation, idx: number) => (
+              <div key={`${formulation.id}-${idx}`} className="flex justify-between text-sm">
                 <span className="text-muted-foreground">{formulation.component_name}</span>
                 <span className="font-medium">
                   {formulation.quantity.toFixed(3)} {formulation.unit}

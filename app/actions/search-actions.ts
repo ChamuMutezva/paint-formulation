@@ -1,7 +1,6 @@
 "use server"
 
-import { sql } from "@/lib/db"
-import { scaleFormulation } from "@/lib/db"
+import { sql , scaleFormulation} from "@/lib/db"
 
 export async function searchByCustomer(customerName: string) {
   try {

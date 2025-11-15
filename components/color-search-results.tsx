@@ -12,18 +12,29 @@ import { Button } from "@/components/ui/button";
 import { ChevronDown, ChevronUp, Palette } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
+import { Paint, Customer, Formulation } from "@/lib/db";
 
 interface ColorSearchResultsProps {
     results: {
-        paint: any;
-        baseFormulations: any[];
-        customers: any[];
+        paint: Paint;
+        baseFormulations: Formulation[];
+        customers: Customer[];
     };
 }
 
-export function ColorSearchResults({ results }: ColorSearchResultsProps) {
+export function ColorSearchResults({
+    results,
+}: Readonly<ColorSearchResultsProps>) {
     const { paint, baseFormulations, customers } = results;
     const [showFormulation, setShowFormulation] = useState(false);
+
+    const scaledFormulations = baseFormulations.map((f) => ({
+        ...f,
+        quantity:
+            typeof f.quantity === "string"
+                ? Number.parseFloat(f.quantity)
+                : f.quantity,
+    }));
 
     if (!paint) {
         return (
@@ -36,12 +47,12 @@ export function ColorSearchResults({ results }: ColorSearchResultsProps) {
             </Card>
         );
     }
-
-    const totalQuantity = baseFormulations.reduce(
+    
+    const totalQuantity = scaledFormulations.reduce(
         (sum, f) => sum + f.quantity,
         0
     );
-
+    console.log("Total Quantity:", totalQuantity);
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString("en-US", {
             year: "numeric",
@@ -108,9 +119,9 @@ export function ColorSearchResults({ results }: ColorSearchResultsProps) {
                             ) : (
                                 <>
                                     {baseFormulations.map(
-                                        (formulation: any, idx: number) => (
+                                        (formulation: Formulation, idx: number) => (
                                             <div
-                                                key={idx}
+                                                key={`${formulation.id}-${idx}`}
                                                 className="flex justify-between text-sm"
                                             >
                                                 <span className="text-muted-foreground">
@@ -120,7 +131,7 @@ export function ColorSearchResults({ results }: ColorSearchResultsProps) {
                                                     {(() => {
                                                         const num =
                                                             Number.parseFloat(
-                                                                formulation.quantity
+                                                                formulation.quantity.toString()
                                                             );
                                                         return !isNaN(num)
                                                             ? num.toFixed(3)

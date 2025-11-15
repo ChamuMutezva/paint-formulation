@@ -193,7 +193,7 @@ export default async function ReportsPage() {
                                 {data.monthlyTrend.map(
                                     (month: MonthlyTrend, idx: number) => (
                                         <div
-                                            key={idx}
+                                            key={`${month.month}-${idx}`}
                                             className="flex items-center gap-4"
                                         >
                                             <div className="w-32 text-sm font-medium">
@@ -258,7 +258,7 @@ export default async function ReportsPage() {
                                     {data.popularColors.map(
                                         (color: PopularColor, idx: number) => (
                                             <div
-                                                key={idx}
+                                                key={`${color.color_name}-${idx}`}
                                                 className="flex items-center justify-between"
                                             >
                                                 <div className="flex items-center gap-3">
@@ -315,7 +315,7 @@ export default async function ReportsPage() {
                                     {data.activeCustomers.map(
                                         (customer: ActiveCustomer, idx: number) => (
                                             <div
-                                                key={idx}
+                                                key={`${customer.name}-${idx}`}
                                                 className="flex items-center justify-between"
                                             >
                                                 <div className="flex items-center gap-3">
@@ -376,7 +376,7 @@ export default async function ReportsPage() {
                                 {data.recentPurchases.map(
                                     (purchase: RecentPurchase, idx: number) => (
                                         <div
-                                            key={idx}
+                                            key={`${purchase.customer_name}-${idx}`}
                                             className="flex items-center justify-between p-3 bg-muted rounded-lg"
                                         >
                                             <div className="flex-1">
