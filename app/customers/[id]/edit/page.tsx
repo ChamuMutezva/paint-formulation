@@ -6,8 +6,9 @@ import { CustomerForm } from "@/components/customer-form"
 import { notFound } from "next/navigation"
 import { getCustomer } from "@/lib/queries"
 
-export default async function EditCustomerPage({ params }: Readonly<{ params: { id: string } }>) {
-  const customer = await getCustomer(params.id)
+export default async function EditCustomerPage({ params }: Readonly<{ params: Promise< { id: string } > }>) {
+  const { id } = await params
+  const customer = await getCustomer(id)
 
   if (!customer) {
     notFound()

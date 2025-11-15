@@ -17,8 +17,24 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { getReportData } from "@/lib/queries";
 
-export default async function ReportsPage() {
-    const data = await getReportData();
+export default async function ReportsPage() {    
+    let data;
+    let error: string | null = null;
+    try {
+        data = await getReportData();
+    } catch (err) {
+        error =
+            err instanceof Error ? err.message : "Failed to load report data.";
+        data = {
+            totalCustomers: 0,
+            totalPaints: 0,
+            totalPurchases: 0,
+            monthlyTrend: [],
+            popularColors: [],
+            activeCustomers: [],
+            recentPurchases: [],
+        };
+    }
 
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString("en-US", {
@@ -58,6 +74,16 @@ export default async function ReportsPage() {
             </header>
 
             <main className="container mx-auto px-4 py-8">
+                {/* Error Display */}
+                {error && (
+                    <div className="mb-6 p-4 bg-destructive/10 border border-destructive/20 rounded-lg">
+                        <p className="text-destructive font-medium">{error}</p>
+                        <p className="text-sm text-muted-foreground mt-1">
+                            Showing placeholder data. Please try refreshing the
+                            page.
+                        </p>
+                    </div>
+                )}
                 {/* Summary Cards */}
                 <div className="grid gap-6 md:grid-cols-3 mb-8">
                     <Card>

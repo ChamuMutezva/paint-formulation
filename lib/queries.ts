@@ -81,7 +81,7 @@ export async function getReportData() {
             monthlyTrend,
         };
     } catch (error) {
-        console.error("[v0] Error fetching report data:", error);
+        console.error("Error fetching report data:", error);
         return {
             totalCustomers: 0,
             totalPaints: 0,
