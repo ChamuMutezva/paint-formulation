@@ -30,7 +30,7 @@ export function ShareFormulation({
     unit,
     formulations,
     customerName,
-}: ShareFormulationProps) {
+}: Readonly<ShareFormulationProps>) {
     const [copied, setCopied] = useState(false);
 
     const formatMessage = () => {
@@ -64,7 +64,7 @@ export function ShareFormulation({
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
         } catch (error) {
-            console.error("[v0] Failed to copy:", error);
+            console.error("Failed to copy:", error);
         }
     };
 
@@ -79,7 +79,7 @@ export function ShareFormulation({
                 });
             } catch (error) {
                 // User cancelled or error occurred
-                console.error("[v0] Share failed:", error);
+                console.error("Share failed:", error);
             }
         } else {
             // Fallback to copy

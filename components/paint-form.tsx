@@ -12,6 +12,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Plus, Trash2, GripVertical } from "lucide-react"
 import { createPaint, updatePaint } from "@/app/actions/paint-actions"
 import type { Paint, Formulation } from "@/lib/db"
+import { ImageFormulationExtractor } from "./image-formulation-extractor"
 
 interface PaintWithFormulation extends Paint {
   formulations: Formulation[]
@@ -99,8 +100,30 @@ export function PaintForm({ paint }: PaintFormProps) {
     }
   }
 
+   const handleExtractedData = (data: any) => {
+    setFormData({
+      color_name: data.colorName,
+      product_type: data.productType,
+      base_size: data.baseSize.toString(),
+      base_unit: data.baseUnit,
+      description: data.description || "",
+    })
+
+    setFormulations(
+      data.components.map((comp: any, idx: number) => ({
+        component_name: comp.name,
+        quantity: comp.quantity.toString(),
+        unit: comp.unit,
+        sort_order: idx,
+      }))
+    )
+  }
+
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
+      {!paint && (
+        <ImageFormulationExtractor onExtracted={handleExtractedData} />
+      )}
       <Card>
         <CardHeader>
           <CardTitle>Paint Information</CardTitle>
