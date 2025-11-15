@@ -37,13 +37,29 @@ export function ImageFormulationExtractor({
     const [success, setSuccess] = useState(false);
     const [preview, setPreview] = useState<string | null>(null);
 
+    const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+    const ALLOWED_TYPES = ["image/jpeg", "image/jpg", "image/png"];
+
     const handleImageUpload = async (file: File) => {
+        // Validate file size
+        if (file.size > MAX_FILE_SIZE) {
+            setError("File size must be less than 5MB");
+            return;
+        }
+
+        // Validate file type
+        if (!ALLOWED_TYPES.includes(file.type)) {
+            setError("Only JPG and PNG files are supported");
+            return;
+        }
+
         setLoading(true);
         setError(null);
         setSuccess(false);
 
         try {
             // Convert image to base64
+            /*
             const reader = new FileReader();
             reader.readAsDataURL(file);
 
@@ -76,6 +92,41 @@ export function ImageFormulationExtractor({
             reader.onerror = () => {
                 throw new Error("Failed to read image file");
             };
+            */
+            // Convert image to base64
+            const base64Image = await new Promise<string>((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result as string);
+                reader.onerror = () =>
+                    reject(new Error("Failed to read image file"));
+                reader.readAsDataURL(file);
+            });
+
+            setPreview(base64Image);
+
+            // Call API to extract formulation
+            const response = await fetch("/api/extract-formulation", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ image: base64Image }),
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to extract formulation");
+            }
+
+            const { data } = await response.json();
+            onExtracted(data);
+            setSuccess(true);
+
+            // Clear preview after 2 seconds
+            const timeoutId = setTimeout(() => {
+                setPreview(null);
+                setSuccess(false);
+            }, 2000);
+
+            // Store timeout ID for cleanup if needed
+            return () => clearTimeout(timeoutId);
         } catch (err) {
             console.error("[v0] Error extracting formulation:", err);
             setError(
