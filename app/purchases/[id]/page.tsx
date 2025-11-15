@@ -16,8 +16,9 @@ import { getPurchaseDetails } from "@/lib/queries";
 
 export default async function PurchaseDetailPage({
     params,
-}: Readonly<{ params: { id: string } }>) {
-    const data = await getPurchaseDetails(params.id);
+}: Readonly<{ params: Promise<{ id: string }> }>) {
+    const { id } = await params;
+    const data = await getPurchaseDetails(id);
 
     if (!data) {
         notFound();

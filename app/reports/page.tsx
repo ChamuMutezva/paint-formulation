@@ -17,11 +17,49 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { getReportData } from "@/lib/queries";
 
+interface PopularColor {
+    color_name: string;
+    product_type: string;
+    purchase_count: number;
+    total_volume: number;
+}
+
+interface MonthlyTrend {
+    month: string;
+    purchase_count: number;
+}
+
+interface ActiveCustomer {
+    name: string;
+    customer_type: "company" | "individual";
+    purchase_count: number;
+    last_purchase: string;
+}
+
+interface RecentPurchase {
+    customer_name: string;
+    color_name: string;
+    product_type: string;
+    size: number;
+    unit: string;
+    purchase_date: string;
+}
+
+interface ReportData {
+    totalCustomers: number;
+    totalPaints: number;   
+    totalPurchases: number;
+    monthlyTrend: MonthlyTrend[];
+    popularColors: PopularColor[];
+    activeCustomers: ActiveCustomer[];
+    recentPurchases: RecentPurchase[];
+}
+
 export default async function ReportsPage() {    
-    let data;
+    let data : ReportData;
     let error: string | null = null;
     try {
-        data = await getReportData();
+        data = await getReportData() as ReportData;
     } catch (err) {
         error =
             err instanceof Error ? err.message : "Failed to load report data.";
@@ -33,7 +71,7 @@ export default async function ReportsPage() {
             popularColors: [],
             activeCustomers: [],
             recentPurchases: [],
-        };
+        } as ReportData;
     }
 
     const formatDate = (dateString: string) => {
@@ -153,7 +191,7 @@ export default async function ReportsPage() {
                         <CardContent>
                             <div className="space-y-3">
                                 {data.monthlyTrend.map(
-                                    (month: any, idx: number) => (
+                                    (month: MonthlyTrend, idx: number) => (
                                         <div
                                             key={idx}
                                             className="flex items-center gap-4"
@@ -218,7 +256,7 @@ export default async function ReportsPage() {
                             ) : (
                                 <div className="space-y-4">
                                     {data.popularColors.map(
-                                        (color: any, idx: number) => (
+                                        (color: PopularColor, idx: number) => (
                                             <div
                                                 key={idx}
                                                 className="flex items-center justify-between"
@@ -275,7 +313,7 @@ export default async function ReportsPage() {
                             ) : (
                                 <div className="space-y-4">
                                     {data.activeCustomers.map(
-                                        (customer: any, idx: number) => (
+                                        (customer: ActiveCustomer, idx: number) => (
                                             <div
                                                 key={idx}
                                                 className="flex items-center justify-between"
@@ -336,7 +374,7 @@ export default async function ReportsPage() {
                         ) : (
                             <div className="space-y-3">
                                 {data.recentPurchases.map(
-                                    (purchase: any, idx: number) => (
+                                    (purchase: RecentPurchase, idx: number) => (
                                         <div
                                             key={idx}
                                             className="flex items-center justify-between p-3 bg-muted rounded-lg"

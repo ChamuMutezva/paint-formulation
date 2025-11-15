@@ -109,7 +109,7 @@ export async function getPurchases(): Promise<PurchaseWithDetails[]> {
     `;
         return purchases as PurchaseWithDetails[];
     } catch (error) {
-        console.error("[v0] Error fetching purchases:", error);
+        console.error("Error fetching purchases:", error);
         return [];
     }
 }
@@ -127,7 +127,7 @@ export async function getCustomersAndPaints() {
             paints: paints as Paint[],
         };
     } catch (error) {
-        console.error("[v0] Error fetching data:", error);
+        console.error("Error fetching data:", error);
         return { customers: [], paints: [] };
     }
 }
@@ -163,7 +163,7 @@ export async function getPurchaseDetails(id: string) {
             formulations: formulationResult as Formulation[],
         };
     } catch (error) {
-        console.error("[v0] Error fetching purchase details:", error);
+        console.error("Error fetching purchase details:", error);
         return null;
     }
 }
@@ -214,7 +214,7 @@ export async function getPaintWithFormulations(id: string) {
             formulations: formulationResult as Formulation[],
         };
     } catch (error) {
-        console.error("[v0] Error fetching paint:", error);
+        console.error("Error fetching paint:", error);
         return null;
     }
 }
@@ -227,7 +227,7 @@ export async function getCustomers(): Promise<Customer[]> {
     `;
         return customers as Customer[];
     } catch (error) {
-        console.error("[v0] Error fetching customers:", error);
+        console.error("Error fetching customers:", error);
         return [];
     }
 }
@@ -239,7 +239,7 @@ export async function getCustomer(id: string): Promise<Customer | null> {
     `
     return (result[0] as Customer) || null
   } catch (error) {
-    console.error("[v0] Error fetching customer:", error)
+    console.error("Error fetching customer:", error)
     return null
   }
 }
