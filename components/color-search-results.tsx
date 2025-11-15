@@ -13,6 +13,7 @@ import { ChevronDown, ChevronUp, Palette } from "lucide-react";
 import { useState } from "react";
 import Link from "next/link";
 import { Paint, Customer, Formulation } from "@/lib/db";
+import { ShareFormulation } from "./share-formulation";
 
 interface ColorSearchResultsProps {
     results: {
@@ -47,12 +48,11 @@ export function ColorSearchResults({
             </Card>
         );
     }
-    
+
     const totalQuantity = scaledFormulations.reduce(
         (sum, f) => sum + f.quantity,
         0
     );
-    console.log("Total Quantity:", totalQuantity);
     const formatDate = (dateString: string) => {
         return new Date(dateString).toLocaleDateString("en-US", {
             year: "numeric",
@@ -107,55 +107,78 @@ export function ColorSearchResults({
                     </Button>
 
                     {showFormulation && (
-                        <div className="space-y-2 p-3 bg-muted rounded-lg">
-                            <div className="font-medium text-sm mb-2">
-                                Base formula ({paint.base_size}{" "}
-                                {paint.base_unit}):
+                        <div className="space-y-3">
+                            <div className="space-y-2 p-3 bg-muted rounded-lg">
+                                <div className="font-medium text-sm mb-2">
+                                    Base formula ({paint.base_size}{" "}
+                                    {paint.base_unit}):
+                                </div>
+                                {baseFormulations.length === 0 ? (
+                                    <p className="text-sm text-muted-foreground italic">
+                                        No formulation available
+                                    </p>
+                                ) : (
+                                    <>
+                                        {baseFormulations.map(
+                                            (
+                                                formulation: Formulation,
+                                                idx: number
+                                            ) => (
+                                                <div
+                                                    key={`${formulation.id}-${idx}`}
+                                                    className="flex justify-between text-sm"
+                                                >
+                                                    <span className="text-muted-foreground">
+                                                        {
+                                                            formulation.component_name
+                                                        }
+                                                    </span>
+                                                    <span className="font-medium">
+                                                        {(() => {
+                                                            const num =
+                                                                Number.parseFloat(
+                                                                    formulation.quantity.toString()
+                                                                );
+                                                            return !isNaN(num)
+                                                                ? num.toFixed(3)
+                                                                : "0.000";
+                                                        })()}{" "}
+                                                        {formulation.unit}
+                                                    </span>
+                                                </div>
+                                            )
+                                        )}
+                                        <div className="border-t border-border pt-2 mt-2 flex justify-between text-sm font-semibold">
+                                            <span>Total:</span>
+                                            <span>
+                                                {typeof totalQuantity ===
+                                                "number"
+                                                    ? totalQuantity.toFixed(3)
+                                                    : (
+                                                          Number.parseFloat(
+                                                              totalQuantity
+                                                          ) || 0
+                                                      ).toFixed(3)}{" "}
+                                                {paint.base_unit}
+                                            </span>
+                                        </div>
+                                    </>
+                                )}
                             </div>
-                            {baseFormulations.length === 0 ? (
-                                <p className="text-sm text-muted-foreground italic">
-                                    No formulation available
-                                </p>
-                            ) : (
-                                <>
-                                    {baseFormulations.map(
-                                        (formulation: Formulation, idx: number) => (
-                                            <div
-                                                key={`${formulation.id}-${idx}`}
-                                                className="flex justify-between text-sm"
-                                            >
-                                                <span className="text-muted-foreground">
-                                                    {formulation.component_name}
-                                                </span>
-                                                <span className="font-medium">
-                                                    {(() => {
-                                                        const num =
-                                                            Number.parseFloat(
-                                                                formulation.quantity.toString()
-                                                            );
-                                                        return !isNaN(num)
-                                                            ? num.toFixed(3)
-                                                            : "0.000";
-                                                    })()}{" "}
-                                                    {formulation.unit}
-                                                </span>
-                                            </div>
-                                        )
+                            {baseFormulations.length > 0 && (
+                                <ShareFormulation
+                                    paintName={paint.color_name}
+                                    productType={paint.product_type}
+                                    size={paint.base_size}
+                                    unit={paint.base_unit}
+                                    formulations={baseFormulations.map(
+                                        (f: any) => ({
+                                            component_name: f.component_name,
+                                            quantity: Number(f.quantity),
+                                            unit: f.unit,
+                                        })
                                     )}
-                                    <div className="border-t border-border pt-2 mt-2 flex justify-between text-sm font-semibold">
-                                        <span>Total:</span>
-                                        <span>
-                                            {typeof totalQuantity === "number"
-                                                ? totalQuantity.toFixed(3)
-                                                : (
-                                                      Number.parseFloat(
-                                                          totalQuantity
-                                                      ) || 0
-                                                  ).toFixed(3)}{" "}
-                                            {paint.base_unit}
-                                        </span>
-                                    </div>
-                                </>
+                                />
                             )}
                         </div>
                     )}

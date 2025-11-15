@@ -13,6 +13,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { notFound } from "next/navigation";
 import { getPurchaseDetails } from "@/lib/queries";
+import { ShareFormulation } from "@/components/share-formulation";
 
 export default async function PurchaseDetailPage({
     params,
@@ -143,13 +144,34 @@ export default async function PurchaseDetailPage({
 
                 <Card className="mt-6">
                     <CardHeader>
-                        <CardTitle>
-                            Formulation for {purchase.size} {purchase.unit}
-                        </CardTitle>
-                        <CardDescription>
-                            Scaled from base formula ({paint.base_size}{" "}
-                            {paint.base_unit})
-                        </CardDescription>
+                        <div className="flex justify-between items-start">
+                            <div>
+                                <CardTitle>
+                                    Formulation for {purchase.size}{" "}
+                                    {purchase.unit}
+                                </CardTitle>
+                                <CardDescription>
+                                    Scaled from base formula ({paint.base_size}{" "}
+                                    {paint.base_unit})
+                                </CardDescription>
+                            </div>
+                            {scaledFormulations.length > 0 && (
+                                <ShareFormulation
+                                    paintName={paint.color_name}
+                                    productType={paint.product_type}
+                                    size={purchase.size}
+                                    unit={purchase.unit}
+                                    formulations={scaledFormulations.map(
+                                        (f) => ({
+                                            component_name: f.component_name,
+                                            quantity: Number(f.quantity),
+                                            unit: f.unit,
+                                        })
+                                    )}
+                                    customerName={customer.name}
+                                />
+                            )}
+                        </div>
                     </CardHeader>
                     <CardContent>
                         {scaledFormulations.length === 0 ? (
